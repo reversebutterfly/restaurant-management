@@ -13,5 +13,7 @@ public interface OrderService {
 
     List<String> getMealNamesForOrder(int orderId);
 
-    Order findByPhoneNum(String phoneNum);
+    Order findByPhoneNumber(String phoneNumber);
+
+    Order findById(Integer id);
 }

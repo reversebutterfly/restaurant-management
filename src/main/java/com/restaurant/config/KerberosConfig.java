@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.kerberos.authentication.KerberosAuthenticationProvider;
 import org.springframework.security.kerberos.authentication.KerberosServiceAuthenticationProvider;
@@ -66,7 +65,6 @@ public class KerberosConfig {
     public UserDetailsService kerberosUserDetailsService() {
         return username -> {
             // 在实际应用中，你会从数据库中查询用户详情
-            // 这里为了示例，创建一个具有ROLE_USER权限的硬编码用户
             return new User(username, "",
                     AuthorityUtils.createAuthorityList("ROLE_USER"));
         };

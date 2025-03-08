@@ -14,6 +14,6 @@ public interface OrderMapper extends BaseMapper<Order> {
     @Select("SELECT meal_name FROM meal JOIN order_meal ON meal.m_id = order_meal.m_id WHERE order_meal.o_id = #{orderId}")
     List<String> getMealNamesForOrder(@Param("orderId") int orderId);
 
-    @Select("SELECT * FROM `order` WHERE phone_num = #{phoneNum} ORDER BY o_id DESC LIMIT 1")
-    Order findByPhoneNum(@Param("phoneNum") String phoneNum);
+    @Select("SELECT * FROM `order` WHERE phone_num = #{phoneNumber} ORDER BY o_id DESC LIMIT 1")
+    Order findByPhoneNumber(@Param("phoneNumber") String phoneNumber);
 }

@@ -5,12 +5,18 @@ import com.restaurant.mapper.CustomerMapper;
 import com.restaurant.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class CustomerServiceImpl implements CustomerService {
 
+    private final CustomerMapper customerMapper;
+
     @Autowired
-    private CustomerMapper customerMapper;
+    public CustomerServiceImpl(CustomerMapper customerMapper) {
+        this.customerMapper = customerMapper;
+    }
 
     @Override
     public int add(Customer customer) {
@@ -18,7 +24,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer findByPhoneNum(String phoneNum) {
-        return customerMapper.findByPhoneNum(phoneNum);
+    public Customer findByPhoneNumber(String phoneNumber) {
+        return customerMapper.findByPhoneNumber(phoneNumber);
     }
 }

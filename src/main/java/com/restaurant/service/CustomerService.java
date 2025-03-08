@@ -6,5 +6,5 @@ public interface CustomerService {
 
     int add(Customer customer);
 
-    Customer findByPhoneNum(String phoneNum);
+    Customer findByPhoneNumber(String phoneNumber);
 }

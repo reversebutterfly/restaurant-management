@@ -18,4 +18,6 @@ public interface MealService {
     int updateStatus(String mealName, boolean isDeleted);
 
     Meal findByMealName(String mealName);
+
+    Meal findById(Integer id);
 }

@@ -1,30 +1,30 @@
 package com.restaurant.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.kerberos.authentication.KerberosAuthenticationProvider;
 import org.springframework.security.kerberos.authentication.KerberosServiceAuthenticationProvider;
 import org.springframework.security.kerberos.web.authentication.SpnegoAuthenticationProcessingFilter;
 import org.springframework.security.kerberos.web.authentication.SpnegoEntryPoint;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-
-// 注意：这个类还需要更新，因为WebSecurityConfigurerAdapter在新版本中被弃用了
-// 但先解决导入问题
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
-    @Autowired
-    private KerberosConfig kerberosConfig;
+    private final KerberosConfig kerberosConfig;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    public SecurityConfig(KerberosConfig kerberosConfig) {
+        this.kerberosConfig = kerberosConfig;
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, SpnegoAuthenticationProcessingFilter filter) throws Exception {
         http
                 .exceptionHandling()
                 .authenticationEntryPoint(spnegoEntryPoint())
@@ -34,22 +34,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/**").authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login")
-                .permitAll()
+                .loginPage("/login").permitAll()
                 .and()
                 .logout()
                 .permitAll()
                 .and()
-                .addFilterBefore(
-                        spnegoAuthenticationProcessingFilter(),
-                        BasicAuthenticationFilter.class);
+                .addFilterBefore(filter, BasicAuthenticationFilter.class);
+
+        return http.build();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .authenticationProvider(kerberosAuthenticationProvider())
-                .authenticationProvider(kerberosServiceAuthenticationProvider());
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .authenticationProvider(kerberosConfig.kerberosAuthenticationProvider())
+                .authenticationProvider(kerberosConfig.kerberosServiceAuthenticationProvider())
+                .build();
     }
 
     @Bean
@@ -58,20 +58,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public SpnegoAuthenticationProcessingFilter spnegoAuthenticationProcessingFilter()
-            throws Exception {
+    public SpnegoAuthenticationProcessingFilter spnegoAuthenticationProcessingFilter(
+            AuthenticationManager authenticationManager) {
         SpnegoAuthenticationProcessingFilter filter = new SpnegoAuthenticationProcessingFilter();
-        filter.setAuthenticationManager(authenticationManagerBean());
+        filter.setAuthenticationManager(authenticationManager);
         return filter;
-    }
-
-    @Bean
-    public KerberosAuthenticationProvider kerberosAuthenticationProvider() {
-        return kerberosConfig.kerberosAuthenticationProvider();
-    }
-
-    @Bean
-    public KerberosServiceAuthenticationProvider kerberosServiceAuthenticationProvider() {
-        return kerberosConfig.kerberosServiceAuthenticationProvider();
     }
 }

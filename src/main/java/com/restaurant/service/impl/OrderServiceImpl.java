@@ -1,30 +1,37 @@
 package com.restaurant.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.restaurant.entity.Order;
+import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.mapper.OrderMapper;
 import com.restaurant.service.OrderService;
 import com.restaurant.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class OrderServiceImpl implements OrderService {
 
+    private final OrderMapper orderMapper;
+
     @Autowired
-    private OrderMapper orderMapper;
+    public OrderServiceImpl(OrderMapper orderMapper) {
+        this.orderMapper = orderMapper;
+    }
 
     @Override
     public List<Order> list(Order order) {
-        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        LambdaQueryWrapper<Order> queryWrapper = new LambdaQueryWrapper<>();
         if (order != null) {
             if (order.getId() != null && order.getId() != 0) {
-                queryWrapper.eq("o_id", order.getId());
+                queryWrapper.eq(Order::getId, order.getId());
             }
-            if (StringUtil.isNotEmpty(order.getPhoneNum())) {
-                queryWrapper.eq("phone_num", order.getPhoneNum());
+            if (StringUtil.isNotEmpty(order.getPhoneNumber())) {
+                queryWrapper.eq(Order::getPhoneNumber, order.getPhoneNumber());
             }
         }
         return orderMapper.selectList(queryWrapper);
@@ -46,7 +53,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order findByPhoneNum(String phoneNum) {
-        return orderMapper.findByPhoneNum(phoneNum);
+    public Order findByPhoneNumber(String phoneNumber) {
+        return orderMapper.findByPhoneNumber(phoneNumber);
+    }
+
+    @Override
+    public Order findById(Integer id) {
+        Order order = orderMapper.selectById(id);
+        if (order == null) {
+            throw new ResourceNotFoundException("Order", "id", id);
+        }
+        return order;
     }
 }

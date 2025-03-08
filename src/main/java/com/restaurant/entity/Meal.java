@@ -1,60 +1,40 @@
 package com.restaurant.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@TableName("meal")
 public class Meal {
-    int m_id;
-    String meal_name;
-    BigDecimal price;
-    int is_deleted;
 
-    public Meal(String meal_name, BigDecimal price) {
-        this.meal_name = meal_name;
+    @TableId(value = "m_id", type = IdType.AUTO)
+    private Integer id;
+
+    @TableField("meal_name")
+    private String mealName;
+
+    @TableField("price")
+    private BigDecimal price;
+
+    @TableField("is_deleted")
+    private Boolean isDeleted;
+
+    public Meal(String mealName, BigDecimal price) {
+        this.mealName = mealName;
         this.price = price;
+        this.isDeleted = false;
     }
 
-    public Meal() {
-
+    public Meal(String mealName) {
+        this.mealName = mealName;
     }
-
-    public Meal(int is_deleted) {
-        this.is_deleted = is_deleted;
-    }
-
-    public int getIs_deleted() {
-        return is_deleted;
-    }
-
-    public void setIs_deleted(int is_deleted) {
-        this.is_deleted = is_deleted;
-    }
-
-    public Meal(String meal_name) {
-        this.meal_name = meal_name;
-    }
-
-    public int getM_id() {
-        return m_id;
-    }
-
-    public void setM_id(int m_id) {
-        this.m_id = m_id;
-    }
-
-    public String getMeal_name() {
-        return meal_name;
-    }
-
-    public void setMeal_name(String meal_name) {
-        this.meal_name = meal_name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
 }

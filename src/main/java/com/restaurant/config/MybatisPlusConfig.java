@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-
 @Configuration
 @EnableTransactionManagement
 @MapperScan("com.restaurant.mapper")
@@ -16,7 +15,6 @@ public class MybatisPlusConfig {
 
     /**
      * 新的分页插件配置
-     * 官方推荐使用MybatisPlusInterceptor替代原有的PaginationInterceptor
      */
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {

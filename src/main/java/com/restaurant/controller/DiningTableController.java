@@ -2,8 +2,8 @@ package com.restaurant.controller;
 
 import com.restaurant.entity.DiningTable;
 import com.restaurant.service.DiningTableService;
+import com.restaurant.util.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,23 +12,35 @@ import java.util.List;
 @RequestMapping("/api/tables")
 public class DiningTableController {
 
+    private final DiningTableService diningTableService;
+
     @Autowired
-    private DiningTableService diningTableService;
+    public DiningTableController(DiningTableService diningTableService) {
+        this.diningTableService = diningTableService;
+    }
 
     @GetMapping("/available")
-    public ResponseEntity<List<DiningTable>> getAvailableTables() {
+    public ApiResponse<List<DiningTable>> getAvailableTables() {
         List<DiningTable> tables = diningTableService.findAvailableTables();
-        return ResponseEntity.ok(tables);
+        return ApiResponse.success(tables);
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<?> updateStatus(@PathVariable Integer id, @RequestBody DiningTable diningTable) {
+    public ApiResponse<?> updateStatus(@PathVariable Integer id, @RequestBody DiningTable diningTable) {
+        // 确保ID与路径参数一致
         diningTable.setId(id);
+
         int result = diningTableService.updateStatus(diningTable);
         if (result > 0) {
-            return ResponseEntity.ok().body("Table status updated successfully");
+            return ApiResponse.success("餐桌状态更新成功", null);
         } else {
-            return ResponseEntity.badRequest().body("Failed to update table status");
+            return ApiResponse.error("餐桌状态更新失败");
         }
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<DiningTable> getById(@PathVariable Integer id) {
+        DiningTable table = diningTableService.findById(id);
+        return ApiResponse.success(table);
     }
 }

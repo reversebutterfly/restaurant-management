@@ -1,35 +1,42 @@
 package com.restaurant.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.restaurant.entity.Meal;
+import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.mapper.MealMapper;
 import com.restaurant.service.MealService;
 import com.restaurant.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class MealServiceImpl implements MealService {
 
+    private final MealMapper mealMapper;
+
     @Autowired
-    private MealMapper mealMapper;
+    public MealServiceImpl(MealMapper mealMapper) {
+        this.mealMapper = mealMapper;
+    }
 
     @Override
     public List<Meal> list(Meal meal) {
-        QueryWrapper<Meal> queryWrapper = new QueryWrapper<>();
+        LambdaQueryWrapper<Meal> queryWrapper = new LambdaQueryWrapper<>();
         if (meal != null && StringUtil.isNotEmpty(meal.getMealName())) {
-            queryWrapper.eq("meal_name", meal.getMealName());
+            queryWrapper.eq(Meal::getMealName, meal.getMealName());
         }
-        queryWrapper.eq("is_deleted", false);
+        queryWrapper.eq(Meal::getIsDeleted, false);
         return mealMapper.selectList(queryWrapper);
     }
 
     @Override
     public int delete(String mealName) {
-        QueryWrapper<Meal> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("meal_name", mealName);
+        LambdaQueryWrapper<Meal> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Meal::getMealName, mealName);
         return mealMapper.delete(queryWrapper);
     }
 
@@ -41,8 +48,8 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public int update(Meal meal) {
-        QueryWrapper<Meal> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("meal_name", meal.getMealName());
+        LambdaQueryWrapper<Meal> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Meal::getMealName, meal.getMealName());
         return mealMapper.update(meal, queryWrapper);
     }
 
@@ -59,5 +66,14 @@ public class MealServiceImpl implements MealService {
     @Override
     public Meal findByMealName(String mealName) {
         return mealMapper.findByMealName(mealName);
+    }
+
+    @Override
+    public Meal findById(Integer id) {
+        Meal meal = mealMapper.selectById(id);
+        if (meal == null) {
+            throw new ResourceNotFoundException("Meal", "id", id);
+        }
+        return meal;
     }
 }

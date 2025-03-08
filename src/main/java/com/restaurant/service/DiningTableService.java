@@ -8,4 +8,6 @@ public interface DiningTableService {
     List<DiningTable> findAvailableTables();
 
     int updateStatus(DiningTable diningTable);
+
+    DiningTable findById(Integer id);
 }

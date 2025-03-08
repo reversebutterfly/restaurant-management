@@ -2,24 +2,28 @@ package com.restaurant.controller;
 
 import com.restaurant.entity.Business;
 import com.restaurant.service.BusinessService;
+import com.restaurant.util.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/business")
+@RequestMapping("/api/public/business")
 public class BusinessController {
 
+    private final BusinessService businessService;
+
     @Autowired
-    private BusinessService businessService;
+    public BusinessController(BusinessService businessService) {
+        this.businessService = businessService;
+    }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Business loginRequest) {
+    public ApiResponse<Business> login(@RequestBody Business loginRequest) {
         Business business = businessService.login(loginRequest.getUsername(), loginRequest.getPassword());
         if (business != null) {
-            return ResponseEntity.ok(business);
+            return ApiResponse.success("登录成功", business);
         } else {
-            return ResponseEntity.badRequest().body("Invalid username or password");
+            return ApiResponse.error("用户名或密码错误");
         }
     }
 }

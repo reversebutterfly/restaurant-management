@@ -1,46 +1,30 @@
 package com.restaurant.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@TableName("customer")
 public class Customer {
-    int c_id;
-    int t_id;
-    String phone_num;
 
-    public Customer(int t_id, String phone_num) {
-        this.t_id = t_id;
-        this.phone_num = phone_num;
-    }
+    @TableId(value = "c_id", type = IdType.AUTO)
+    private Integer id;
 
-    public Customer(int c_id, int t_id, String phone_num) {
-        this.c_id = c_id;
-        this.t_id = t_id;
-        this.phone_num = phone_num;
-    }
+    @TableField("t_id")
+    private Integer tableId;
 
-    public Customer() {
+    @TableField("phone_num")
+    private String phoneNumber;
 
-    }
-
-    public int getC_id() {
-        return c_id;
-    }
-
-    public void setC_id(int c_id) {
-        this.c_id = c_id;
-    }
-
-    public int getT_id() {
-        return t_id;
-    }
-
-    public void setT_id(int t_id) {
-        this.t_id = t_id;
-    }
-
-    public String getPhone_num() {
-        return phone_num;
-    }
-
-    public void setPhone_num(String phone_num) {
-        this.phone_num = phone_num;
+    public Customer(Integer tableId, String phoneNumber) {
+        this.tableId = tableId;
+        this.phoneNumber = phoneNumber;
     }
 }

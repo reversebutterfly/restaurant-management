@@ -1,43 +1,55 @@
 package com.restaurant.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(prefix = {"o_", "t_", "c_"}) // 这告诉Lombok处理这些前缀
+@TableName("order")
 public class Order {
-    int o_id;   // 将自动生成 getId() 和 setId()
-    int t_id;   // 将自动生成 getTId() 和 setTId()
-    int c_id;   // 将自动生成 getCId() 和 setCId()
-    String phone_num;
-    BigDecimal cost_money;
 
-    // 保留必要的构造函数
-    public Order(int t_id, int c_id, String phone_num, BigDecimal cost_money) {
-        this.t_id = t_id;
-        this.c_id = c_id;
-        this.phone_num = phone_num;
-        this.cost_money = cost_money;
+    @TableId(value = "o_id", type = IdType.AUTO)
+    private Integer id;
+
+    @TableField("t_id")
+    private Integer tableId;
+
+    @TableField("c_id")
+    private Integer customerId;
+
+    @TableField("phone_num")
+    private String phoneNumber;
+
+    @TableField("cost_money")
+    private BigDecimal costMoney;
+
+    public Order(Integer tableId, Integer customerId, String phoneNumber, BigDecimal costMoney) {
+        this.tableId = tableId;
+        this.customerId = customerId;
+        this.phoneNumber = phoneNumber;
+        this.costMoney = costMoney;
     }
 
-    public Order(int t_id, int c_id, String phone_num) {
-        this.t_id = t_id;
-        this.c_id = c_id;
-        this.phone_num = phone_num;
+    public Order(Integer tableId, Integer customerId, String phoneNumber) {
+        this.tableId = tableId;
+        this.customerId = customerId;
+        this.phoneNumber = phoneNumber;
     }
 
-    public Order(String phone_num) {
-        this.phone_num = phone_num;
+    public Order(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public Order(int o_id, BigDecimal cost_money) {
-        this.o_id = o_id;
-        this.cost_money = cost_money;
+    public Order(Integer id, BigDecimal costMoney) {
+        this.id = id;
+        this.costMoney = costMoney;
     }
 }

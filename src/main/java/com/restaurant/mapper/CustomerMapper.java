@@ -9,6 +9,6 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface CustomerMapper extends BaseMapper<Customer> {
 
-    @Select("SELECT * FROM customer WHERE phone_num = #{phoneNum}")
-    Customer findByPhoneNum(@Param("phoneNum") String phoneNum);
+    @Select("SELECT * FROM customer WHERE phone_num = #{phoneNumber}")
+    Customer findByPhoneNumber(@Param("phoneNumber") String phoneNumber);
 }
